@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abc.aireview.model.InvoiceData;
@@ -103,6 +105,41 @@ public class AIReviewController {
        	
    		return listData;
    	}
+    
+    
+    
+    @GetMapping("/getInvoicedatabyidandstatus/{id}")
+    @ResponseBody
+	public InvoiceData getInvoiceByIdandstatus(@PathVariable int id,@RequestParam String status ) {
+    	InvoiceData invData=new InvoiceData();
+    	boolean flag=false;
+		Optional<InvoiceData> data=repo.findById(id);
+		
+	    if(data.isPresent()) 
+	    	invData=data.get();
+	    if(invData.getStatus().equals("Completed")) {
+	    	flag=true;
+	    }
+	    	    
+		return invData;
+	
+	}
+    
+    
+    
+    @GetMapping("/all")
+    @ResponseBody
+	public List<InvoiceData> getInvoiceByusernameandstatus(@RequestParam String username,@RequestParam String status ) {
+    	
+    	List<InvoiceData> listData=new ArrayList<InvoiceData>();
+       	for (InvoiceData invoiceData : repo.findAll()) {
+       		if(invoiceData.getUser().equals(username) && invoiceData.getStatus().equals(status)) {
+       			listData.add(invoiceData);
+       		}
+   		}
+		return listData;
+	
+	}
     
     
     
